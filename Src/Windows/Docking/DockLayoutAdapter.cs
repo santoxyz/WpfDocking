@@ -127,8 +127,10 @@ namespace DevZest.Windows.Docking
                 if (IsDockTreeEmpty(pane))
                 {
                     DockTree dockTree = pane.DockTree;
+
                     if (dockTree.IsFloating)
                     {
+                        showMethod = DockItemShowMethod.Activate;
                         FloatingWindow floatingWindow = dockTree.FloatingWindow;
                         Rect bounds = new Rect(floatingWindow.Left, floatingWindow.Top, floatingWindow.Width, floatingWindow.Height);
                         action = new ShowAsFloatingAction(source, bounds, showMethod);

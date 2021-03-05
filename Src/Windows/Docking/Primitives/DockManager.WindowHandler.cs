@@ -55,7 +55,7 @@ namespace DevZest.Windows.Docking.Primitives
                     SetFloatingWindowStrategy(_dockControl, value);
                     if (value == FloatingWindowStrategy.Wpf)
                         InitWpfStrategy();
-                    else
+                    else 
                         InitNativeStrategy();
                 }
             }
@@ -84,6 +84,13 @@ namespace DevZest.Windows.Docking.Primitives
 
             private void InitNativeStrategy()
             {
+                for(int i = DockControl.FloatingWindows.Count -1; i>=0; i--)
+                {
+                    if (!DockControl.FloatingWindows[i].IsVisible)
+                    {
+                        DockControl.FloatingWindows.Remove(DockControl.FloatingWindows[i]);
+                    }
+                }
                 Debug.Assert(DockControl.FloatingWindows.Count == 0);
                 DockControl.FloatingWindows.CollectionChanged += new NotifyCollectionChangedEventHandler(OnFloatingWindowsChanged);
             }
@@ -169,8 +176,25 @@ namespace DevZest.Windows.Docking.Primitives
                 SetStartMousePosition(_overlayWindow, _overlayWindow.PointFromScreen(_startMousePoint));
                 foreach (FloatingWindow floatingWindow in DockControl.FloatingWindows)
                 {
+                    if (!floatingWindow.IsVisible)
+                        continue;
+
                     NativeFloatingWindow nativeWindow = NativeFloatingWindow.GetNativeFloatingWindow(floatingWindow);
-                    SetStartMousePosition(nativeWindow, nativeWindow.PointFromScreen(_startMousePoint));
+                    if (nativeWindow == null)
+                        continue;
+
+                    Point pointFromScreen = _startMousePoint;
+                    try
+                    {
+                        pointFromScreen = nativeWindow.PointFromScreen(_startMousePoint);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(@"pointFromScreen: " + pointFromScreen);
+                        Debug.WriteLine(e);
+                    }
+                    SetStartMousePosition(nativeWindow, pointFromScreen);
+
                 }
             }
 
@@ -236,6 +260,9 @@ namespace DevZest.Windows.Docking.Primitives
                     if (!floatingWindow.IsVisible)
                         continue;
                     NativeFloatingWindow nativeWindow = NativeFloatingWindow.GetNativeFloatingWindow(floatingWindow);
+                    if (nativeWindow == null)
+                        continue;
+
                     Rect windowBounds = nativeWindow.GetPreviewBounds(_overlayWindow);
                     stopHitTest = windowBounds.Contains(pt);
                     if (stopHitTest)
@@ -349,6 +376,8 @@ namespace DevZest.Windows.Docking.Primitives
                     if (!floatingWindow.IsVisible)
                         continue;
                     NativeFloatingWindow nativeWindow = NativeFloatingWindow.GetNativeFloatingWindow(floatingWindow);
+                    if (nativeWindow == null)
+                        continue;
                     Rect windowBounds = nativeWindow.GetPreviewBounds(_overlayWindow);
                     if (windowBounds.Contains(pt))
                     {
