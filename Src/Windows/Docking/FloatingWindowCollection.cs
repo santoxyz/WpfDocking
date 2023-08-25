@@ -29,7 +29,15 @@ namespace DevZest.Windows.Docking
 
         private int DockControlZIndex
         {
-            get { return _dockControlZIndex; }
+            get 
+            {
+                Debug.Assert(_dockControlZIndex >= 0);
+                //FIX ANDREA
+                if (_dockControlZIndex < 0)
+                    return 0;
+
+                return _dockControlZIndex; 
+            }
             set
             {
                 _dockControlZIndex = value;

@@ -220,6 +220,12 @@ namespace DevZest.Windows.Docking
                 if (pane.SelectedItem == null || (pane.IsAutoHide && pane != lastActivePane))
                     yield return pane;
             }
+       
+            //FIX ANDREA
+            if (_dockControl.FloatingWindows.Count > 0)
+            {
+                Console.WriteLine("DOCK: " + _dockControl.FloatingWindows.Count.ToString());
+            }
 
             foreach (FloatingWindow floatingWindow in _dockControl.FloatingWindows.GetFloatingWindowsWithDockControl())
             {

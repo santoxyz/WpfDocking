@@ -1262,7 +1262,7 @@ namespace DevZest.Windows.Docking
             if (!dockControl.IsLoaded)
                 throw new ArgumentException(SR.Exception_DockItem_VerifyShowParam_UnloadedDockControl, "dockControl");
         }
-        
+       
         private void RefreshDockPosition()
         {
             Debug.Assert(DockControl != null);
