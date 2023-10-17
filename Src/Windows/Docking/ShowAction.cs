@@ -53,8 +53,15 @@ namespace DevZest.Windows.Docking
 
         internal void Run(DockControl dockControl)
         {
-            DockItem dockItem = dockControl.DockItems[Source];
-            Run(dockItem, dockControl);
+            try
+            {
+                DockItem dockItem = dockControl.DockItems[Source];
+                Run(dockItem, dockControl);
+            }
+            catch
+            {
+                Console.WriteLine("unable to load " + dockControl.ToString());
+            }             
         }
 
         internal abstract void Run(DockItem dockItem, DockControl dockControl);
