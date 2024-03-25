@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -124,16 +121,28 @@ namespace DevZest.Windows.Docking.Primitives
             if (e.ClickCount == 1)
             {
                 DockItem dockItem = DockItem;
-                if (dockItem != null)
+
+                ////QUINCY patch
+                try
                 {
-                    dockItem.Activate();
-                    UpdateLayout(); // Fix in 2.0.4846: this can avoid unnecessary mouse move event caused by layout change
+                    if (dockItem != null)
+                    {
+                        dockItem.Activate();
+                        UpdateLayout(); // Fix in 2.0.4846: this can avoid unnecessary mouse move event caused by layout change
+                    }
+                    DockManager.BeginDrag(this, this, e);
+                    e.Handled = true;
                 }
-                DockManager.BeginDrag(this, this, e);
-                e.Handled = true;
+                catch
+                {
+                    string message = string.Format("Tab {0} cannot be loaded! Avoid double click during project Loading!", dockItem.TabText);
+                    MessageBox.Show(message, "Aricton Translate Tool", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                }
             }
             else if (e.ClickCount == 2)
                 e.Handled = DockCommands.Execute(this, DoubleClickCommand);
+
         }
 
         Rect IDragSource.GetFloatingWindowPreview(RelativePoint mouseStartPosition)

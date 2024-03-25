@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace DevZest.Windows.Docking.Primitives
 {
@@ -68,6 +67,10 @@ namespace DevZest.Windows.Docking.Primitives
             new FrameworkPropertyMetadata(null));
         private static WindowHandler GetWindowHandler(DockControl dockControl)
         {
+            ///////QUINCY PATCH
+            ////if (dockControl == null)
+            ////    return new WindowHandler(new DockControl());
+
             return (WindowHandler)dockControl.GetValue(WindowHandlerProperty);
         }
         private static void SetWindowHandler(DockControl dockControl, WindowHandler value)
@@ -840,36 +843,36 @@ namespace DevZest.Windows.Docking.Primitives
         internal static void Drop(DockPane dockPane)
         {
             Drop(dockPane,
-                delegate(DockItem dockItem) { return CanDrop(dockItem, DockTreePosition.Document); },
-                delegate(DockItem dockItem) { Drop(dockItem); });
+                delegate (DockItem dockItem) { return CanDrop(dockItem, DockTreePosition.Document); },
+                delegate (DockItem dockItem) { Drop(dockItem); });
         }
 
         internal static void Drop(DockPane dockPane, Dock dock, bool sendToBack)
         {
             Drop(dockPane,
-                delegate(DockItem dockItem) { return CanDrop(dockItem, DockPositionHelper.GetDockTreePosition(dock)); },
-                delegate(DockItem dockItem) { Drop(dockItem, dock, sendToBack); });
+                delegate (DockItem dockItem) { return CanDrop(dockItem, DockPositionHelper.GetDockTreePosition(dock)); },
+                delegate (DockItem dockItem) { Drop(dockItem, dock, sendToBack); });
         }
 
         internal static void Drop(DockPane dockPane, Rect floatingWindowBounds)
         {
             Drop(dockPane,
-                delegate(DockItem dockItem) { return CanDrop(dockItem, DockTreePosition.Floating); },
-                delegate(DockItem dockItem) { Drop(dockItem, floatingWindowBounds); });
+                delegate (DockItem dockItem) { return CanDrop(dockItem, DockTreePosition.Floating); },
+                delegate (DockItem dockItem) { Drop(dockItem, floatingWindowBounds); });
         }
 
         internal static void Drop(DockPane dockPane, DockPane targetPane, DockPanePreviewPlacement placement)
         {
             Drop(dockPane,
-                delegate(DockItem dockItem) { return CanDrop(dockItem, targetPane); },
-                delegate(DockItem dockItem) { Drop(dockItem, targetPane, placement); });
+                delegate (DockItem dockItem) { return CanDrop(dockItem, targetPane); },
+                delegate (DockItem dockItem) { Drop(dockItem, targetPane, placement); });
         }
 
         internal static void Drop(DockPane dockPane, DockItem targetItem)
         {
             Drop(dockPane,
-                delegate(DockItem dockItem) { return CanDrop(dockItem, targetItem); },
-                delegate(DockItem dockItem) { Drop(dockItem, targetItem); });
+                delegate (DockItem dockItem) { return CanDrop(dockItem, targetItem); },
+                delegate (DockItem dockItem) { Drop(dockItem, targetItem); });
         }
 
         private static DockItem[] GetActiveItems(DockPane dockPane)
@@ -942,7 +945,7 @@ namespace DevZest.Windows.Docking.Primitives
             {
                 if (CanDrop(dockPane, targetPane))
                     return true;
-            }            
+            }
 
             return false;
         }
@@ -956,7 +959,7 @@ namespace DevZest.Windows.Docking.Primitives
             {
                 if (CanDrop(dockPane, targetItem))
                     return true;
-            }            
+            }
 
             return false;
         }
@@ -964,15 +967,15 @@ namespace DevZest.Windows.Docking.Primitives
         internal static void Drop(FloatingWindow floatingWindow, Dock dock, bool sendToBack)
         {
             Drop(floatingWindow,
-                delegate(DockPane dockPane) { return CanDrop(dockPane, DockPositionHelper.GetDockTreePosition(dock)); },
-                delegate(DockPane dockPane) { Drop(dockPane, dock, sendToBack); });
+                delegate (DockPane dockPane) { return CanDrop(dockPane, DockPositionHelper.GetDockTreePosition(dock)); },
+                delegate (DockPane dockPane) { Drop(dockPane, dock, sendToBack); });
         }
 
         internal static void Drop(FloatingWindow floatingWindow)
         {
             Drop(floatingWindow,
-                delegate(DockPane dockPane) { return CanDrop(dockPane, DockTreePosition.Document); },
-                delegate(DockPane dockPane) { Drop(dockPane); });
+                delegate (DockPane dockPane) { return CanDrop(dockPane, DockTreePosition.Document); },
+                delegate (DockPane dockPane) { Drop(dockPane); });
         }
 
         internal static void Drop(FloatingWindow floatingWindow, Rect floatingWindowBounds)
@@ -990,13 +993,13 @@ namespace DevZest.Windows.Docking.Primitives
             if (placement != DockPanePreviewPlacement.Fill)
             {
                 Drop(floatingWindow,
-                    delegate(DockPane dockPane) { return CanDrop(dockPane, targetPane); },
-                    delegate(DockPane dockPane) { Drop(dockPane, targetPane, placement); });
+                    delegate (DockPane dockPane) { return CanDrop(dockPane, targetPane); },
+                    delegate (DockPane dockPane) { Drop(dockPane, targetPane, placement); });
             }
             else
             {
                 DockPane[] panes = GetPanes(floatingWindow,
-                    delegate(DockPane dockPane) { return CanDrop(dockPane, targetPane); });
+                    delegate (DockPane dockPane) { return CanDrop(dockPane, targetPane); });
                 NestedDockEntry[] enties = GetNestedDockEntries(panes);
                 Drop(panes[0], targetPane, DockPanePreviewPlacement.Fill);
                 foreach (NestedDockEntry entry in enties)
@@ -1010,7 +1013,7 @@ namespace DevZest.Windows.Docking.Primitives
             DockControl dockControl = floatingWindow.DockControl;
             dockControl.BeginUndoUnit();
             DockPane[] panes = GetPanes(floatingWindow,
-                delegate(DockPane dockPane) { return CanDrop(dockPane, targetItem); });
+                delegate (DockPane dockPane) { return CanDrop(dockPane, targetItem); });
             NestedDockEntry[] enties = GetNestedDockEntries(panes);
             Drop(panes[0], targetItem);
             foreach (NestedDockEntry entry in enties)
@@ -1033,11 +1036,11 @@ namespace DevZest.Windows.Docking.Primitives
         private static void Drop(DockPane dockPane, DockPaneNode targetPaneNode, Dock dock, SplitterDistance splitterDistance, bool swapChildren)
         {
             Drop(dockPane,
-                delegate(DockItem dockItem)
+                delegate (DockItem dockItem)
                 {
                     return CanDrop(dockItem, targetPaneNode);
                 },
-                delegate(DockItem dockItem)
+                delegate (DockItem dockItem)
                 {
                     dockItem.Show(targetPaneNode, false, dock, splitterDistance, swapChildren, GetShowMethod(dockItem));
                 });
@@ -1104,13 +1107,13 @@ namespace DevZest.Windows.Docking.Primitives
                     DockPane targetPane = targetItem.SecondPane;
                     int targetIndex = targetPane.Items.IndexOf(targetItem);
                     Drop(pane,
-                        delegate(DockItem dockItem) { return dockItem.CanToggleFloating; },
-                        delegate(DockItem dockItem) { dockItem.Show(targetPane, targetIndex, GetShowMethod(dockItem)); });
+                        delegate (DockItem dockItem) { return dockItem.CanToggleFloating; },
+                        delegate (DockItem dockItem) { dockItem.Show(targetPane, targetIndex, GetShowMethod(dockItem)); });
                 }
                 else
                     Drop(pane,
-                        delegate(DockItem dockItem) { return dockItem.CanToggleFloating; },
-                        delegate(DockItem dockItem) { dockItem.ToggleFloating(GetShowMethod(dockItem)); });
+                        delegate (DockItem dockItem) { return dockItem.CanToggleFloating; },
+                        delegate (DockItem dockItem) { dockItem.ToggleFloating(GetShowMethod(dockItem)); });
             }
 
             dockControl.EndUndoUnit();
