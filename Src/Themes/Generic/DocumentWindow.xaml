@@ -28,6 +28,15 @@
                     <Setter Property="Header" Value="{Binding TabText}" />
                     <Setter Property="CommandTarget" Value="{Binding}" />
                     <Setter Property="Command" Value="docking:DockCommands.Show" />
+
+                    <Setter Property="HeaderTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <ContentPresenter Content="{Binding}"
+                                                  RecognizesAccessKey="False" />
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
 
                 <DataTemplate x:Key="OverlayTemplate">
